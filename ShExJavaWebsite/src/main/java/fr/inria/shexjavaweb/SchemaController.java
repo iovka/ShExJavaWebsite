@@ -1,4 +1,4 @@
-package fr.inria.shexjavaweb.impl;
+package fr.inria.shexjavaweb;
 
 public interface SchemaController {
 
