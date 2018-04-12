@@ -9,9 +9,27 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class WebController {
 
 	@GetMapping("/")
-    public String greeting(@RequestParam(name="name", required=false, defaultValue="World") String name, Model model) {
-        model.addAttribute("name", name);
+    public String greeting(Model model) {
         return "index";
     }
+	
+	@GetMapping("/download")
+    public String download(Model model) {
+        return "download";
+    }
+	
+	@GetMapping("/documentation")
+    public String documentation(Model model) {
+        return "documentation";
+    }
+	
+	@GetMapping("/demonstrator")
+    public String demonstrator(Model model) {
+        return "demonstrator";
+    }
 
+	@GetMapping("/about")
+    public String about(Model model) {
+        return "about";
+    }
 }
