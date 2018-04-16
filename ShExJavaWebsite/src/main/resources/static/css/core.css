@@ -37,6 +37,7 @@ body {
 /* Content style */
 .content {
     position:relative;
+    top:50px;
     left:15%;
     width:70%;
 }

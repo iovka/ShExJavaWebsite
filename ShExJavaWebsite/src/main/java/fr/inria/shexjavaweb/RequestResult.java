@@ -3,6 +3,7 @@ package fr.inria.shexjavaweb;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Model;
@@ -10,6 +11,7 @@ import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.Rio;
 
+import fr.univLille.cristal.shex.graph.NeighborTriple;
 import fr.univLille.cristal.shex.graph.RDF4JGraph;
 import fr.univLille.cristal.shex.graph.RDFGraph;
 import fr.univLille.cristal.shex.schema.Label;
@@ -17,11 +19,13 @@ import fr.univLille.cristal.shex.schema.ShexSchema;
 import fr.univLille.cristal.shex.schema.parsing.ShExCParser;
 import fr.univLille.cristal.shex.schema.parsing.ShExJParser;
 import fr.univLille.cristal.shex.schema.parsing.ShExRParser;
-import fr.univLille.cristal.shex.validation.RefineValidation;
+import fr.univLille.cristal.shex.util.Pair;
+import fr.univLille.cristal.shex.validation.RecursiveValidation;
 import fr.univLille.cristal.shex.validation.ValidationAlgorithm;
 
 public class RequestResult {
 	private String result=null;
+	private List<Pair<NeighborTriple, Label>> matching=null;
 		
 	public RequestResult() {
 		super();
@@ -37,13 +41,13 @@ public class RequestResult {
 					IRI focusNode = SimpleValueFactory.getInstance().createIRI(validation.getNode()); 
 					Label shapeLabel = new Label(SimpleValueFactory.getInstance().createIRI(validation.getShape())); 
 	
-					ValidationAlgorithm valAlgo = new RefineValidation(schema, graph);
+					ValidationAlgorithm valAlgo = new RecursiveValidation(schema, graph);
 					if (valAlgo.validate(focusNode, shapeLabel))
-						this.result = focusNode+" has shape "+shapeLabel;
+						this.result = "Success: "+focusNode+" has shape "+shapeLabel;
 					else
-						this.result = focusNode+" does not have shape "+shapeLabel;			
+						this.result = "Failure: "+focusNode+" does not have shape "+shapeLabel;
+					//matching = valAlgo.getTyping().getMatch(focusNode, shapeLabel);
 				}catch (Exception e) {
-					System.err.println("lol"+e.getLocalizedMessage());
 					this.result = e.getMessage();
 				}
 			}
@@ -58,10 +62,18 @@ public class RequestResult {
 		this.result = result;
 	}
 	
+	public List<Pair<NeighborTriple, Label>> getMatching() {
+		return matching;
+	}
+
+	public void setMatching(List<Pair<NeighborTriple, Label>> matching) {
+		this.matching = matching;
+	}	
+	
 	//-------------------------------
 	// Utils
 	//------------------------------
-	
+
 	private ShexSchema parseShexSchema(RequestValidation validation) {
 		ShexSchema schema = null;
 		try  {
@@ -80,7 +92,6 @@ public class RequestResult {
 		} catch (Exception e) {
 			result = e.toString();
 			result +=": "+e.getMessage();
-			e.printStackTrace();
 			return null;
 		}
 		return schema;

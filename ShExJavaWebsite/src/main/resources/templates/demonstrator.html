@@ -28,8 +28,8 @@
                     <td>Data</td>
                 </tr>
                 <tr>
-                    <td><textarea rows="20" cols="80" th:field="*{schema}"/></textarea></td>
-                    <td><textarea rows="20" cols="80" th:field="*{data}"/></textarea></td>
+                    <td><textarea rows="20" cols="80" th:field="*{schema}"/></td>
+                    <td><textarea rows="20" cols="80" th:field="*{data}"/></td>
                 </tr>
                 <tr>
                     <td>Schema format:
@@ -56,7 +56,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>Focus node: <input type="text" th:field="*{node}"/</td>
+                    <td>Focus node: <input type="text" th:field="*{node}"/></td>
                     <td></td>
                 </tr>
                 <tr>
@@ -73,6 +73,10 @@
         <div th:if="${result.result != null}">
             <h2> Result: </h2>
             <p th:text="${result.result}">Result</p>
+            <div th:if="${result.matching != null}">
+                <h1>Matching</h1>
+                
+            </div>
         </div>
     </div>
     <div th:replace="fragments/footer :: footer"></div>
