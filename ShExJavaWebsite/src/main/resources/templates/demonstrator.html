@@ -10,12 +10,13 @@
     <div th:replace="fragments/navbar :: navbar"></div>
     <div class="content">
         <h1>Demonstrator</h1>
-        <p th:text="${result.result}">Result</p>
         <form action="#"  th:action="@{/demonstrator}" th:object="${request}" method="POST">
              Predefined example:
-             <select id="predefined" onchange="loadExample()">
+             <select th:field="*{predefined}" onchange="loadExample()">
                  <option value="empty">Empty example</option>
-                 <option value="datatypes">Datatypes</option>
+                 <option value="Bug report (ShExC)">Bug report: EachOf, OneOf, Cardinality in ShExC</option>
+                 <option value="Bug report (ShExJ)">Bug report: EachOf, OneOf, Cardinality in ShExJ</option>
+                 <option value="Datatypes (ShExC)">Datatypes (ShExC)</option>
              </select> 
              <table>
                 <tr>
@@ -61,11 +62,14 @@
                 <tr>
                     <td>
                         <input type="submit" value="Validate"/>
-                        <input type="reset" value="Reset"/>
                     </td>
                 </tr>
             </table>
         </form>
+        <div th:if="${result.result != null}">
+            <h2> Result: </h2>
+            <p th:text="${result.result}">Result</p>
+        </div>
     </div>
     <div th:replace="fragments/footer :: footer"></div>
 </body>

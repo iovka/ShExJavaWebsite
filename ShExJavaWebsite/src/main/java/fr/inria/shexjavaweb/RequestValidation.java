@@ -7,6 +7,7 @@ public class RequestValidation {
 	private String dataformat="";
 	private String node="";
 	private String shape="";
+	private String predefined="";
 	
 	public String getSchema() {
 		return schema;
@@ -54,6 +55,14 @@ public class RequestValidation {
 	
 	public void setShape(String shape) {
 		this.shape = shape;
-	}	
+	}
+
+	public String getPredefined() {
+		return predefined;
+	}
+
+	public void setPredefined(String predefined) {
+		this.predefined = predefined;
+	}
 
 }

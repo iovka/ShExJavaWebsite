@@ -28,14 +28,14 @@ public class WebController {
 	@GetMapping("/demonstrator")
     public String demonstrator(Model model) {
 		model.addAttribute("request",new RequestValidation());
-		model.addAttribute("result",new RequestResult(""));
+		model.addAttribute("result",new RequestResult());
         return "demonstrator";
     }
 	
 	@PostMapping("/demonstrator")
     public String validate(@ModelAttribute RequestValidation validation, Model model) {
 		model.addAttribute("request",validation);
-		model.addAttribute("result", new RequestResult("Testttttt"));
+		model.addAttribute("result", new RequestResult(validation));
         return "demonstrator";
     }
 
