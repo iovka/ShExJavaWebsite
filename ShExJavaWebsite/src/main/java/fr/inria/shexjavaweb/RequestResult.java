@@ -80,6 +80,7 @@ public class RequestResult {
 		} catch (Exception e) {
 			result = e.toString();
 			result +=": "+e.getMessage();
+			e.printStackTrace();
 			return null;
 		}
 		return schema;

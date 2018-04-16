@@ -8,8 +8,10 @@ cd shex-java/shex
 git checkout dev
 mvn -DskipTests clean install
 
+cd ../..
+
 git clone https://github.com/jdusart/ShExJavaWebsite.git
-cd ShExJavaWebsite
+cd ShExJavaWebsite/ShExJavaWebsite
 mvn spring-boot:run
 
 ```

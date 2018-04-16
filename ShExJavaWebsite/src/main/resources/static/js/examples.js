@@ -7,6 +7,20 @@ function loadExample() {
        document.getElementById("shape").value = "";
        document.getElementById("schemaformat").value = "ShExC";
        document.getElementById("dataformat").value = "TURTLE";
+   } else if (example == "Simple ShExC example"){
+       document.getElementById("data").value = simple_data;
+       document.getElementById("schema").value = simple_schec;
+       document.getElementById("node").value = "http://example.org/alice";
+       document.getElementById("shape").value = "http://example.org/User";
+       document.getElementById("schemaformat").value = "ShExC";
+       document.getElementById("dataformat").value = "TURTLE";
+   } else if (example == "Simple ShExR example"){
+       document.getElementById("data").value = simple_data;
+       document.getElementById("schema").value = simple_scher_ttl;
+       document.getElementById("node").value = "http://example.org/alice";
+       document.getElementById("shape").value = "http://example.org/User";
+       document.getElementById("schemaformat").value = "ShExR(TURTLE)";
+       document.getElementById("dataformat").value = "TURTLE";
    } else if (example == "Names (ShExC)"){
        document.getElementById("data").value = names_data;
        document.getElementById("schema").value = names_schec;
@@ -47,6 +61,63 @@ function loadExample() {
 }
 
 
+
+//----------------------------
+// Simple example
+//----------------------------
+var simple_data = `PREFIX :       <http://example.org/>
+PREFIX schema: <http://schema.org/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+PREFIX foaf:   <http://xmlns.com/foaf/0.1/>
+
+:alice schema:name           "Alice" ;            # %* \Passes{:User} *)
+       schema:gender         schema:Female ;
+       schema:knows          :bob .
+
+:bob   schema:gender         schema:Male ;        # %* \Passes{:User} *)
+       schema:name           "Robert";            
+       schema:birthDate      "1980-03-10"^^xsd:date .
+
+:carol schema:name           "Carol" ;            # %* \Passes{:User} *)
+       schema:gender         schema:Female ;  
+       foaf:name             "Carol" .`
+       
+var simple_schec = `PREFIX :       <http://example.org/>
+PREFIX schema: <http://schema.org/>
+PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+
+:User IRI { 
+ schema:name          xsd:string  ;
+ schema:birthDate     xsd:date?  ;
+ schema:gender        [ schema:Male schema:Female ];
+ schema:knows         @:User*
+}`
+
+var simple_scher_ttl = `PREFIX sx: <http://www.w3.org/ns/shex#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix : <http://example.org/>
+prefix schema: <http://schema.org/>
+
+:schema a sx:Schema ;
+   sx:shapes :User .
+
+:User a sx:ShapeAnd ;
+  sx:shapeExprs (
+   [ a sx:NodeConstraint ;
+     sx:nodeKind sx:iri 
+   ] 
+   [ a sx:Shape;
+     sx:Expression 
+      [ a sx:TripleConstraint ;
+        sx:predicate schema:name ;
+        sx:valueExpr [
+         a sx:NodeConstraint ;
+         sx:datatype xsd:String
+        ]
+      ]
+   ]
+ ) .`  
 
 //----------------------------
 // Datatypes example
