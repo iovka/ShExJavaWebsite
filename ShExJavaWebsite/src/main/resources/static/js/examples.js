@@ -7,6 +7,20 @@ function loadExample() {
        document.getElementById("shape").value = "";
        document.getElementById("schemaformat").value = "ShExC";
        document.getElementById("dataformat").value = "TURTLE";
+   } else if (example == "Names (ShExC)"){
+       document.getElementById("data").value = names_data;
+       document.getElementById("schema").value = names_schec;
+       document.getElementById("node").value = "http://example.shex∕user4";
+       document.getElementById("shape").value = "http://a.example/User";
+       document.getElementById("schemaformat").value = "ShExC";
+       document.getElementById("dataformat").value = "TURTLE";
+   } else if (example == "Names (ShExJ)"){
+       document.getElementById("data").value = names_data;
+       document.getElementById("schema").value = names_schej;
+       document.getElementById("node").value = "http://example.shex∕user4";
+       document.getElementById("shape").value = "http://a.example/User";
+       document.getElementById("schemaformat").value = "ShExJ";
+       document.getElementById("dataformat").value = "TURTLE";
    } else if (example == "Bug report (ShExC)"){
        document.getElementById("data").value = bugreport_data;
        document.getElementById("schema").value = bugreport_schec;
@@ -33,6 +47,10 @@ function loadExample() {
 }
 
 
+
+//----------------------------
+// Datatypes example
+//----------------------------
 var datatypes_shexC = `<http://a.example/S-integer> { <http://a.example/p> <http://www.w3.org/2001/XMLSchema#integer> }
 <http://a.example/S-decimal> { <http://a.example/p> <http://www.w3.org/2001/XMLSchema#decimal> }
 <http://a.example/S-float> { <http://a.example/p> <http://www.w3.org/2001/XMLSchema#float> }
@@ -41,7 +59,6 @@ var datatypes_shexC = `<http://a.example/S-integer> { <http://a.example/p> <http
 <http://a.example/S-boolean> { <http://a.example/p> <http://www.w3.org/2001/XMLSchema#boolean> }
 <http://a.example/S-dateTime> { <http://a.example/p> <http://www.w3.org/2001/XMLSchema#dateTime> }
 `
-
 
 var datatypes_data = `PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
@@ -100,6 +117,10 @@ var datatypes_data = `PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
  <http://a.example/double-pINF> <http://a.example/p> "+INF"^^xsd:double .
 `
 
+
+//----------------------------
+// Bug report example
+//----------------------------
 var bugreport_schec = `<http://a.example/User> {
   <http://a.example/name> <http://www.w3.org/2001/XMLSchema#string>;
   <http://a.example/email> <http://www.w3.org/2001/XMLSchema#string>?
@@ -289,3 +310,80 @@ var bugreport_data = `<http://example.shex∕user1> <http://a.example/name> "Mr.
 <http://example.shex∕bug1> <http://a.example/related> <http://example.shex∕bug2> .
 
 <http://example.shex∕bug2> <http://a.example/related> <http://example.shex∕bug1> .`
+
+
+//----------------------------
+// Names example
+//----------------------------
+var names_schec = `<http://a.example/UserStringName> {
+  <http://a.example/name> <http://www.w3.org/2001/XMLSchema#string>;
+}
+
+<http://a.example/UserCompName> {
+  <http://a.example/first-name> <http://www.w3.org/2001/XMLSchema#string> ;
+  <http://a.example/last-name> <http://www.w3.org/2001/XMLSchema#string> 
+}
+
+<http://a.example/User> (
+  @<http://a.example/UserStringName> 
+  OR @<http://a.example/UserCompName>
+)`
+
+var names_schej = `{
+  "@context": "http://www.w3.org/ns/shex.jsonld",
+  "type": "Schema",
+  "shapes": [
+    {
+      "id": "http://a.example/UserStringName",
+      "type": "Shape",
+      "expression": {
+          "type": "TripleConstraint",
+          "predicate": "http://a.example/name",
+          "valueExpr": {
+            "type": "NodeConstraint",
+            "datatype": "http://www.w3.org/2001/XMLSchema#string"
+          }
+      }
+    },{
+      "id": "http://a.example/UserCompName",
+      "type": "Shape",
+      "expression": {
+          "type": "EachOf",
+          "expressions": [{
+              "type": "TripleConstraint",
+              "predicate": "http://a.example/first-name",
+              "valueExpr": {
+                "type": "NodeConstraint",
+                "datatype": "http://www.w3.org/2001/XMLSchema#string"
+              }
+            },{
+              "type": "TripleConstraint",
+              "predicate": "http://a.example/last-name",
+              "valueExpr": {
+                "type": "NodeConstraint",
+                "datatype": "http://www.w3.org/2001/XMLSchema#string"
+              }
+            }
+          ]
+      }
+    },{
+      "id": "http://a.example/User",
+      "type": "ShapeOr",
+      "shapeExprs":[
+          "http://a.example/UserStringName",
+          "http://a.example/UserCompName"
+      ]
+    }
+  ]
+}`
+
+var names_data = `<http://example.shex∕user1> <http://a.example/name> "Mr. Smith John" .
+
+<http://example.shex∕user2> <http://a.example/first-name> "John" .
+
+<http://example.shex∕user3> <http://a.example/last-name> "Smith" .
+
+<http://example.shex∕user4> <http://a.example/last-name> "Smith" ;
+                            <http://a.example/first-name> "John" .`
+                            
+                            
