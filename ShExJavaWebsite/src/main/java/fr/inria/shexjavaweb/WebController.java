@@ -1,11 +1,12 @@
 package fr.inria.shexjavaweb;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 public class WebController {
@@ -23,6 +24,13 @@ public class WebController {
 	@GetMapping("/documentation")
     public String documentation(Model model) {
         return "documentation";
+    }
+	
+	@GetMapping("/javadocs/**")
+    public String javadocRoot(Model model,HttpServletRequest request) {
+		String base = new String(request.getRequestURL());
+		base = base.split("/javadocs/")[1];
+        return "/javadocs/"+base;
     }
 	
 	@GetMapping("/demonstrator")

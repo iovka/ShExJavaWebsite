@@ -3,6 +3,7 @@ package fr.inria.shexjavaweb;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.rdf4j.model.IRI;
@@ -11,7 +12,6 @@ import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.Rio;
 
-import fr.univLille.cristal.shex.graph.NeighborTriple;
 import fr.univLille.cristal.shex.graph.RDF4JGraph;
 import fr.univLille.cristal.shex.graph.RDFGraph;
 import fr.univLille.cristal.shex.schema.Label;
@@ -25,10 +25,13 @@ import fr.univLille.cristal.shex.validation.ValidationAlgorithm;
 
 public class RequestResult {
 	private String result=null;
-	private List<Pair<NeighborTriple, Label>> matching=null;
+	private List<Pair<String, String>> matching=null;
 		
 	public RequestResult() {
 		super();
+		this.matching = new ArrayList<>();
+		this.matching.add(new Pair("one","lol"));
+		this.matching.add(new Pair("two","mdr"));
 	}
 	
 	public RequestResult(RequestValidation validation) {
@@ -37,11 +40,11 @@ public class RequestResult {
 		if (schema!=null) {
 			RDFGraph graph = parseRDFGraph(validation);
 			if (graph != null) {
+				ValidationAlgorithm valAlgo = new RecursiveValidation(schema, graph);
 				try  {
 					IRI focusNode = SimpleValueFactory.getInstance().createIRI(validation.getNode()); 
 					Label shapeLabel = new Label(SimpleValueFactory.getInstance().createIRI(validation.getShape())); 
-	
-					ValidationAlgorithm valAlgo = new RecursiveValidation(schema, graph);
+						
 					if (valAlgo.validate(focusNode, shapeLabel))
 						this.result = "Success: "+focusNode+" has shape "+shapeLabel;
 					else
@@ -62,13 +65,14 @@ public class RequestResult {
 		this.result = result;
 	}
 	
-	public List<Pair<NeighborTriple, Label>> getMatching() {
+	public List<Pair<String, String>> getMatching() {
 		return matching;
 	}
 
-	public void setMatching(List<Pair<NeighborTriple, Label>> matching) {
+	public void setMatching(List<Pair<String, String>> matching) {
 		this.matching = matching;
-	}	
+	}
+	
 	
 	//-------------------------------
 	// Utils
