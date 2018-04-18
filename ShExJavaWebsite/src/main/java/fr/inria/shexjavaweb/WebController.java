@@ -10,20 +10,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class WebController {
-
-	@GetMapping("/")
+	
+	@GetMapping({"/","index","index.*"})
     public String greeting(Model model) {
         return "index";
-    }
-	
-	@GetMapping("/download")
-    public String download(Model model) {
-        return "download";
-    }
-	
-	@GetMapping("/documentation")
-    public String documentation(Model model) {
-        return "documentation";
     }
 	
 	@GetMapping("/javadocs/**")
@@ -46,9 +36,5 @@ public class WebController {
 		model.addAttribute("result", new RequestResult(validation));
         return "demonstrator";
     }
-
-	@GetMapping("/about")
-    public String about(Model model) {
-        return "about";
-    }
+	
 }

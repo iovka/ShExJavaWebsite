@@ -10,8 +10,18 @@
     <div class="content">
     
         <h2>Introduction</h2>
-        <p>ShExJava is an implementation of the Shape Expressions (ShEx) language for validation of RDF data.</p>
+        <p>ShExJava currently implements the specification of ShEx 2.0 that can be found at the following address: <a href="http://shex.io/shex-semantics/index.html">http://shex.io/shex-semantics/index.html</a>. It comes with support for the two RDF java libraries, <a href="http://rdf4j.org/">RDF4J</a> and <a href="https://jena.apache.org/">Jena</a>. ShExJava can parse ShEx schema in the ShEcC, ShEJ, ShExR formats and can serialize a schema in ShExJ.</p>
         
+        <p>To validate data against a ShExSchema using ShExJava, you have two different algorithms:<ul>
+            <li>the refine algorithm: compute once and for all the typing for the whole graph</li>
+            <li>the recursive algorithm: compute only the typing required to answer a validate(node,ShapeLabel) call and forget the results.</li>
+        </ul>
+        The algorithms have been published in <a href="https://hal.archives-ouvertes.fr/hal-01590350/">Semantics and Validation of Shapes Schemas for RDF</a>.
+        </p>
+        <p>
+        Examples of using the library on small examples can be found on the source code page. To play with small example, it's also possible to use the demonstrator that comes with a set of example.
+        </p>
+                   
     </div>
     <div th:replace="fragments/footer :: footer"></div>
 </body>
