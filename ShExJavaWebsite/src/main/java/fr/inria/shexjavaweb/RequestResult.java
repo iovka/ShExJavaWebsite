@@ -4,10 +4,12 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Model;
+import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.Rio;
@@ -43,16 +45,33 @@ public class RequestResult {
 					ResultEntry res = new ResultEntry(validation.getNode(),validation.getShape());
 					try  {
 						IRI focusNode = SimpleValueFactory.getInstance().createIRI(validation.getNode()); 
-						Label shapeLabel = new Label(SimpleValueFactory.getInstance().createIRI(validation.getShape())); 						
+						Label shapeLabel = new Label(SimpleValueFactory.getInstance().createIRI(validation.getShape()));						
 						res.setResult(valAlgo.validate(focusNode, shapeLabel));
 					}catch (Exception e) {
-						res.setMessage(e.getMessage());
+						res.setMessage(e.toString());
 					}
 					result.add(res);
 				}
 				if (validation.getAlgorithm().equals("refine")) {
 					ValidationAlgorithm valAlgo = new RefineValidation(schema, graph);
-					//valAlgo.validate(null, null);					
+					try {
+						valAlgo.validate(null, null);
+					} catch (Exception e) {
+						error = e.toString();
+					}
+					Iterator<Value> ite = graph.listAllSubjectNodes();
+					while (ite.hasNext()) {
+						Value node = ite.next();
+						for (Label l:schema.getRules().keySet()) {
+							ResultEntry res = new ResultEntry(node.stringValue(),l.stringValue());
+							try {
+								res.setResult(valAlgo.validate(node, l));
+							} catch (Exception e) {
+								res.setMessage(e.toString());
+							}
+							result.add(res);
+						}
+					}
 				}
 			}
 		}
@@ -97,7 +116,7 @@ public class RequestResult {
 				schema = new ShexSchema(parser.getRules(stream,getRDFFormat(validation.getSchemaformat())));
 			}
 		} catch (Exception e) {
-			error = e.toString()+": "+e.getMessage();
+			error = e.toString();
 			return null;
 		}
 		return schema;

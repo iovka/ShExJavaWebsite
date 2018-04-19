@@ -3,7 +3,7 @@ package fr.inria.shexjavaweb;
 public class ResultEntry {
 	private String node;
 	private String shapeLabel;
-	private Boolean result=null;
+	private Boolean result=false;
 	private String message="";
 	
 	public ResultEntry(String node, String shapeLabel) {
