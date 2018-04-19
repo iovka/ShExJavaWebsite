@@ -5,6 +5,7 @@ public class RequestValidation {
 	private String schemaformat="";
 	private String data="";
 	private String dataformat="";
+	private String algorithm="";
 	private String node="";
 	private String shape="";
 	private String predefined="";
@@ -33,6 +34,14 @@ public class RequestValidation {
 		this.data = data;
 	}
 	
+	public String getAlgorithm() {
+		return algorithm;
+	}
+
+	public void setAlgorithm(String algorithm) {
+		this.algorithm = algorithm;
+	}
+
 	public String getDataformat() {
 		return dataformat;
 	}

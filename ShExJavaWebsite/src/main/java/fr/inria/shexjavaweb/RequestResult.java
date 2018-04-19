@@ -19,19 +19,16 @@ import fr.univLille.cristal.shex.schema.ShexSchema;
 import fr.univLille.cristal.shex.schema.parsing.ShExCParser;
 import fr.univLille.cristal.shex.schema.parsing.ShExJParser;
 import fr.univLille.cristal.shex.schema.parsing.ShExRParser;
-import fr.univLille.cristal.shex.util.Pair;
 import fr.univLille.cristal.shex.validation.RecursiveValidation;
+import fr.univLille.cristal.shex.validation.RefineValidation;
 import fr.univLille.cristal.shex.validation.ValidationAlgorithm;
 
 public class RequestResult {
-	private String result=null;
-	private List<Pair<String, String>> matching=null;
+	private List<ResultEntry> result=null;
+	private String error = null;
 		
 	public RequestResult() {
 		super();
-		this.matching = new ArrayList<>();
-		this.matching.add(new Pair("one","lol"));
-		this.matching.add(new Pair("two","mdr"));
 	}
 	
 	public RequestResult(RequestValidation validation) {
@@ -40,37 +37,43 @@ public class RequestResult {
 		if (schema!=null) {
 			RDFGraph graph = parseRDFGraph(validation);
 			if (graph != null) {
-				ValidationAlgorithm valAlgo = new RecursiveValidation(schema, graph);
-				try  {
-					IRI focusNode = SimpleValueFactory.getInstance().createIRI(validation.getNode()); 
-					Label shapeLabel = new Label(SimpleValueFactory.getInstance().createIRI(validation.getShape())); 
-						
-					if (valAlgo.validate(focusNode, shapeLabel))
-						this.result = "Success: "+focusNode+" has shape "+shapeLabel;
-					else
-						this.result = "Failure: "+focusNode+" does not have shape "+shapeLabel;
-					//matching = valAlgo.getTyping().getMatch(focusNode, shapeLabel);
-				}catch (Exception e) {
-					this.result = e.getMessage();
+				result = new ArrayList<>();
+				if (validation.getAlgorithm().equals("recursive")) {
+					ValidationAlgorithm valAlgo = new RecursiveValidation(schema, graph);
+					ResultEntry res = new ResultEntry(validation.getNode(),validation.getShape());
+					try  {
+						IRI focusNode = SimpleValueFactory.getInstance().createIRI(validation.getNode()); 
+						Label shapeLabel = new Label(SimpleValueFactory.getInstance().createIRI(validation.getShape())); 						
+						res.setResult(valAlgo.validate(focusNode, shapeLabel));
+					}catch (Exception e) {
+						res.setMessage(e.getMessage());
+					}
+					result.add(res);
+				}
+				if (validation.getAlgorithm().equals("refine")) {
+					ValidationAlgorithm valAlgo = new RefineValidation(schema, graph);
+					//valAlgo.validate(null, null);					
 				}
 			}
 		}
 	}
 
-	public String getResult() {
+
+	public String getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
+	}
+
+	public List<ResultEntry> getResult() {
 		return result;
 	}
 
-	public void setResult(String result) {
-		this.result = result;
-	}
 	
-	public List<Pair<String, String>> getMatching() {
-		return matching;
-	}
-
-	public void setMatching(List<Pair<String, String>> matching) {
-		this.matching = matching;
+	public void setResult(List<ResultEntry> result) {
+		this.result = result;
 	}
 	
 	
@@ -94,8 +97,7 @@ public class RequestResult {
 				schema = new ShexSchema(parser.getRules(stream,getRDFFormat(validation.getSchemaformat())));
 			}
 		} catch (Exception e) {
-			result = e.toString();
-			result +=": "+e.getMessage();
+			error = e.toString()+": "+e.getMessage();
 			return null;
 		}
 		return schema;
@@ -108,7 +110,7 @@ public class RequestResult {
 			Model data = Rio.parse(stream, "http://a.example.shex/", RDFFormat.TURTLE);
 			graph = new RDF4JGraph(data);
 		} catch (Exception e) {
-			result = e.getMessage();
+			error = e.getMessage();
 		}
 		return graph;
 	}

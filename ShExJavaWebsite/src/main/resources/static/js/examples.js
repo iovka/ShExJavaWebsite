@@ -1,3 +1,11 @@
+function changeRecursive(){
+    if (document.getElementById("algorithm").value == "refine"){
+        document.getElementById("recursive").style.display = 'none';
+    } else {
+        document.getElementById("recursive").style.display = 'block';
+    }
+}
+
 function loadExample() {
    example = document.getElementById("predefined").value;
    if (example == "empty"){

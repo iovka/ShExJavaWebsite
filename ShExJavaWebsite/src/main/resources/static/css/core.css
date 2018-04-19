@@ -33,6 +33,10 @@ body {
     width:60%;
 }
 
+#recursive {
+ display: none;
+}
+
 /* Footer */
 .footer {
     overflow: hidden;

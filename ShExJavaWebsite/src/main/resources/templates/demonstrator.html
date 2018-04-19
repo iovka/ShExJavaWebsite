@@ -56,12 +56,21 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>Focus node: <input type="text" th:field="*{node}"/></td>
-                    <td></td>
+                    <td  colspan = "2">
+                        Validation Algorithm:
+                        <select th:field="*{algorithm}"  onchange="changeRecursive()">
+                             <option value="refine">Refine validation (compute a typing for the whole graph)</option>
+                             <option value="recursive">Recursive validation (test if a node has a ShapeExpr)</option>
+                        </select>
+                     </td>
                 </tr>
                 <tr>
-                    <td>Shape: <input type="text" th:field="*{shape}"/></td>
-                    <td></td>
+                     <td colspan = "2">
+                        <div id="recursive">
+                            Focus node: <input type="text" th:field="*{node}"/><br/>
+                            Shape: <input type="text" th:field="*{shape}"/>
+                        </div>
+                     </td>
                 </tr>
                 <tr>
                     <td>
@@ -70,12 +79,24 @@
                 </tr>
             </table>
         </form>
-        <div th:if="${result.result != null}">
+        <div th:if="${(result.result != null) || (result.error != null)}">
             <h2> Result: </h2>
-            <p th:text="${result.result}">Result</p>
-            <div th:if="${result.matching != null}">
-                <h1>Matching</h1>
-                
+            <span th:text="${result.error != null} ? ${result.error}:''">Error display</span>
+            <div th:if="${result.result != null}">
+                <table>
+                    <tr>
+                        <td>Node</td>
+                        <td>Shape</td>
+                        <td>Result</td>
+                        <td>Message</td>
+                    </tr>
+                    <tr th:each="res:${result.result}">
+                        <td th:text="${res.node}"></td>
+                        <td th:text="${res.shapeLabel}"></td>
+                        <td th:text="${res.result}"></td>
+                        <td th:text="${res.message}"></td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>
