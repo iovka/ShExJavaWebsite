@@ -1,12 +1,13 @@
 body {
     margin:0;
     padding:0;
+    background:#f7f7f7;
 }
 
  /* Navbar style */
 .navbar {
     overflow: hidden;
-    background-color: #333;
+    background-color: #5ab9ea;
     font-family: Arial;
 }
 
@@ -15,6 +16,10 @@ body {
     left:20%;
     width:60%;
     padding: 14px 16px;
+}
+
+#implname{
+    font-weight: 900;
 }
 
 .navbar .nav-content a {
@@ -27,11 +32,21 @@ body {
 
 /* Content style */
 .content {
+    background:white;
     position:relative;
+    padding:20px;
     padding-bottom:60px;
     padding-top:60px;
     left:20%;
     width:60%;
+}
+
+.content a{
+    color:#8860d0;
+}
+
+.content h2, .content h1{
+    color:#5680e9
 }
 
 .result table{
