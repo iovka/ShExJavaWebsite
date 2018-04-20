@@ -28,7 +28,8 @@ body {
 /* Content style */
 .content {
     position:relative;
-    top:60px;
+    padding-bottom:60px;
+    padding-top:60px;
     left:20%;
     width:60%;
 }
