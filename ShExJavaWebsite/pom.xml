@@ -43,6 +43,12 @@
 			<artifactId>rdf4j-runtime</artifactId>
 			<version>2.2.2</version>
 		</dependency>
+		<dependency>
+		  <groupId>io.micrometer</groupId>
+		  <artifactId>micrometer-registry-jmx</artifactId>
+		</dependency>
+
+
 	</dependencies>
 
     <properties>
