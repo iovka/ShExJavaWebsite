@@ -11,33 +11,33 @@ import org.springframework.web.bind.annotation.PostMapping;
 import io.micrometer.core.annotation.Timed;
 
 @Controller
-@Timed("web")
 public class WebController {
-	
+		
+
+	@Timed(value="shexweb.index.timer")
 	@GetMapping({"/","index","index.*"})
-	@Timed(value = "web.index")
     public String greeting(Model model) {
         return "index";
     }
 	
+	@Timed(value="shexweb.javadocs.timer")
 	@GetMapping("/javadocs/**")
-	@Timed(value = "web.javadocs")
     public String javadocRoot(Model model,HttpServletRequest request) {
 		String base = new String(request.getRequestURL());
 		base = base.split("/javadocs/")[1];
         return "/javadocs/"+base;
     }
 	
+	@Timed(value="shexweb.demonstrator.timer")
 	@GetMapping("/demonstrator")
-	@Timed(value = "web.demonstrator.get", longTask = true)
     public String demonstrator(Model model) {
 		model.addAttribute("request",new RequestValidation());
 		model.addAttribute("result",new RequestResult());
         return "demonstrator";
     }
 	
+	@Timed(value="shexweb.demonstrator.timer")
 	@PostMapping("/demonstrator")
-	@Timed(value = "web.demonstrator.post", longTask = true)
     public String validate(@ModelAttribute RequestValidation validation, Model model) {
 		model.addAttribute("request",validation);
 		model.addAttribute("result", new RequestResult(validation));
