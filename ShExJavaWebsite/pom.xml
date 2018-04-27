@@ -33,10 +33,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>fr.univLille.cristal</groupId>
-			<artifactId>shexjava</artifactId>
-			<version>1.0-a2</version>
-			<scope>provided</scope>
+			<groupId>fr.inria.lille.shexjava</groupId>
+  			<artifactId>shexjava-core</artifactId>
+  			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rdf4j</groupId>

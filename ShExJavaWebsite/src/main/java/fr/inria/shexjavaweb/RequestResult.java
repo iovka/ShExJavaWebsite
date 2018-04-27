@@ -14,16 +14,16 @@ import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.Rio;
 
-import fr.univLille.cristal.shex.graph.RDF4JGraph;
-import fr.univLille.cristal.shex.graph.RDFGraph;
-import fr.univLille.cristal.shex.schema.Label;
-import fr.univLille.cristal.shex.schema.ShexSchema;
-import fr.univLille.cristal.shex.schema.parsing.ShExCParser;
-import fr.univLille.cristal.shex.schema.parsing.ShExJParser;
-import fr.univLille.cristal.shex.schema.parsing.ShExRParser;
-import fr.univLille.cristal.shex.validation.RecursiveValidation;
-import fr.univLille.cristal.shex.validation.RefineValidation;
-import fr.univLille.cristal.shex.validation.ValidationAlgorithm;
+import fr.inria.lille.shexjava.graph.RDF4JGraph;
+import fr.inria.lille.shexjava.graph.RDFGraph;
+import fr.inria.lille.shexjava.schema.Label;
+import fr.inria.lille.shexjava.schema.ShexSchema;
+import fr.inria.lille.shexjava.schema.parsing.ShExCParser;
+import fr.inria.lille.shexjava.schema.parsing.ShExJParser;
+import fr.inria.lille.shexjava.schema.parsing.ShExRParser;
+import fr.inria.lille.shexjava.validation.RecursiveValidation;
+import fr.inria.lille.shexjava.validation.RefineValidation;
+import fr.inria.lille.shexjava.validation.ValidationAlgorithm;
 
 public class RequestResult {
 	private List<ResultEntry> result=null;
