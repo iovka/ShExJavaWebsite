@@ -22,7 +22,8 @@ import fr.inria.lille.shexjava.schema.parsing.ShExCParser;
 import fr.inria.lille.shexjava.schema.parsing.ShExJParser;
 import fr.inria.lille.shexjava.schema.parsing.ShExRParser;
 import fr.inria.lille.shexjava.util.CommonGraph;
-import fr.inria.lille.shexjava.validation.RecursiveValidation;
+import fr.inria.lille.shexjava.validation.FailureAnalyzerSimple;
+import fr.inria.lille.shexjava.validation.RecursiveValidationWithMemorization;
 import fr.inria.lille.shexjava.validation.RefineValidation;
 import fr.inria.lille.shexjava.validation.ValidationAlgorithm;
 
@@ -43,12 +44,17 @@ public class RequestResult {
 			if (graph != null) {
 				result = new ArrayList<>();
 				if (validation.getAlgorithm().equals("recursive")) {
-					ValidationAlgorithm valAlgo = new RecursiveValidation(schema, graph);
+					ValidationAlgorithm valAlgo = new RecursiveValidationWithMemorization(schema, graph);
+					FailureAnalyzerSimple fas = new FailureAnalyzerSimple();
+					valAlgo.addFailureReportsCollector(fas);
 					ResultEntry res = new ResultEntry(validation.getNode(),validation.getShape());
 					try  {
 						IRI focusNode = factory.createIRI(validation.getNode()); 
-						Label shapeLabel = new Label(factory.createIRI(validation.getShape()));						
-						res.setResult(valAlgo.validate(focusNode, shapeLabel));
+						Label shapeLabel = new Label(factory.createIRI(validation.getShape()));
+						boolean result = valAlgo.validate(focusNode, shapeLabel);
+						res.setResult(result && fas.hasReport(focusNode, shapeLabel));
+						if (!result && fas.hasReport(focusNode, shapeLabel))
+							res.setMessage(fas.getReport(focusNode, shapeLabel).getMessage());
 					}catch (Exception e) {
 						res.setMessage(e.toString());
 					}
@@ -56,6 +62,8 @@ public class RequestResult {
 				}
 				if (validation.getAlgorithm().equals("refine")) {
 					ValidationAlgorithm valAlgo = new RefineValidation(schema, graph);
+					FailureAnalyzerSimple fas = new FailureAnalyzerSimple();
+					valAlgo.addFailureReportsCollector(fas);
 					try {
 						valAlgo.validate(null, null);
 					} catch (Exception e) {
@@ -67,7 +75,10 @@ public class RequestResult {
 						for (Label l:schema.getRules().keySet()) {
 							ResultEntry res = new ResultEntry(node.toString(),l.stringValue());
 							try {
-								res.setResult(valAlgo.validate(node, l));
+								boolean result = valAlgo.validate(node, l);
+								res.setResult(result);
+								if (!result && fas.hasReport(node, l))
+									res.setMessage(fas.getReport(node, l).getMessage());
 							} catch (Exception e) {
 								res.setMessage(e.toString());
 							}

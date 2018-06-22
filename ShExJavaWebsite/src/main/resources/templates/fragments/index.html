@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" type="text/css" href="../../static/css/core.css" />
+    <link rel="icon" href="../../static/ShEx-Icon.svg">
+</head>
+<body>
+ <div class="content" th:fragment="content">
+        <div id="catch">
+            <h1>Validate RDF data<br/> using <a href="http://shex.io">Shex</a> in java</h1>
+            <p>ShExJava currently implements <a href="http://shex.io/shex-semantics/index.html">ShEx 2.0</a>. It is released under the <a href="https://www.gnu.org/licenses/lgpl.html">LGPL-3.0</a> licence. The source code and instructions for install can be found on <a href="https://github.com/iovka/shex-java">GitHub</a>.</p>
+        </div>
+        <h1>Features</h1>
+        <p>ShExJava now uses the <a href="https://commons.apache.org/proper/commons-rdf/">Commons RDF API</a> and so support <a href="http://rdf4j.org/">RDF4J</a>, <a href="https://jena.apache.org/">Jena</a>, <a href="https://github.com/jsonld-java/jsonld-java">JSON-LD-Java</a>, <a href="http://owlapi.sourceforge.net/">OWL API</a> and <a href="https://clerezza.apache.org/">Apache Clerezza</a>. It can parse ShEx schema in the ShEcC, ShEJ, ShExR formats and can serialize a schema in ShExJ.</p>
+        
+        <p>To validate data against a ShExSchema using ShExJava, you have two different algorithms:<ul>
+            <li>the refine algorithm: compute once and for all the typing for the whole graph</li>
+            <li>the recursive algorithm: compute only the typing required to answer a validate(node,ShapeLabel) call and forget the results.</li>
+        </ul>
+        The algorithms have been published in <a href="https://hal.archives-ouvertes.fr/hal-01590350/">Semantics and Validation of Shapes Schemas for RDF</a>.
+        </p>
+        <p>
+        Examples of using the library on small examples can be found on the GitHub page. To play with small example, it's also possible to use the demonstrator that comes with a set of example.
+        </p>
+        
+        <h1>Contact</h1>
+        If you have an issue with the implementation, an extension or an optimization that you like to have, some feedback to give or any other question, you can create an issue on GitHub or contact <a href="mailto:jeremie.dusart@inria.fr">the current maintener</a>.
+                   
+    </div>
+</body>
+</html>
+
+
