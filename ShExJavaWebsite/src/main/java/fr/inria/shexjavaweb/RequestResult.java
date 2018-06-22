@@ -7,20 +7,21 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.rdf4j.model.IRI;
+import org.apache.commons.rdf.api.Graph;
+import org.apache.commons.rdf.api.IRI;
+import org.apache.commons.rdf.api.RDFTerm;
+import org.apache.commons.rdf.rdf4j.RDF4J;
 import org.eclipse.rdf4j.model.Model;
-import org.eclipse.rdf4j.model.Value;
-import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.Rio;
 
-import fr.inria.lille.shexjava.graph.RDF4JGraph;
-import fr.inria.lille.shexjava.graph.RDFGraph;
+import fr.inria.lille.shexjava.GlobalFactory;
 import fr.inria.lille.shexjava.schema.Label;
 import fr.inria.lille.shexjava.schema.ShexSchema;
 import fr.inria.lille.shexjava.schema.parsing.ShExCParser;
 import fr.inria.lille.shexjava.schema.parsing.ShExJParser;
 import fr.inria.lille.shexjava.schema.parsing.ShExRParser;
+import fr.inria.lille.shexjava.util.CommonGraph;
 import fr.inria.lille.shexjava.validation.RecursiveValidation;
 import fr.inria.lille.shexjava.validation.RefineValidation;
 import fr.inria.lille.shexjava.validation.ValidationAlgorithm;
@@ -28,7 +29,8 @@ import fr.inria.lille.shexjava.validation.ValidationAlgorithm;
 public class RequestResult {
 	private List<ResultEntry> result=null;
 	private String error = null;
-		
+	private static RDF4J factory = (RDF4J) GlobalFactory.RDFFactory; 
+
 	public RequestResult() {
 		super();
 	}
@@ -37,15 +39,15 @@ public class RequestResult {
 		super();
 		ShexSchema schema = parseShexSchema(validation);
 		if (schema!=null) {
-			RDFGraph graph = parseRDFGraph(validation);
+			Graph graph = parseRDFGraph(validation);
 			if (graph != null) {
 				result = new ArrayList<>();
 				if (validation.getAlgorithm().equals("recursive")) {
 					ValidationAlgorithm valAlgo = new RecursiveValidation(schema, graph);
 					ResultEntry res = new ResultEntry(validation.getNode(),validation.getShape());
 					try  {
-						IRI focusNode = SimpleValueFactory.getInstance().createIRI(validation.getNode()); 
-						Label shapeLabel = new Label(SimpleValueFactory.getInstance().createIRI(validation.getShape()));						
+						IRI focusNode = factory.createIRI(validation.getNode()); 
+						Label shapeLabel = new Label(factory.createIRI(validation.getShape()));						
 						res.setResult(valAlgo.validate(focusNode, shapeLabel));
 					}catch (Exception e) {
 						res.setMessage(e.toString());
@@ -59,11 +61,11 @@ public class RequestResult {
 					} catch (Exception e) {
 						error = e.toString();
 					}
-					Iterator<Value> ite = graph.listAllSubjectNodes();
+					Iterator<RDFTerm> ite = CommonGraph.getAllNodes(graph).iterator();
 					while (ite.hasNext()) {
-						Value node = ite.next();
+						RDFTerm node = ite.next();
 						for (Label l:schema.getRules().keySet()) {
-							ResultEntry res = new ResultEntry(node.stringValue(),l.stringValue());
+							ResultEntry res = new ResultEntry(node.toString(),l.stringValue());
 							try {
 								res.setResult(valAlgo.validate(node, l));
 							} catch (Exception e) {
@@ -122,12 +124,12 @@ public class RequestResult {
 		return schema;
 	}
 	
-	private RDFGraph parseRDFGraph(RequestValidation validation) {
-		RDFGraph graph = null;
+	private Graph parseRDFGraph(RequestValidation validation) {
+		Graph graph = null;
 		InputStream stream = new ByteArrayInputStream(validation.getData().getBytes(StandardCharsets.UTF_8));
 		try {
 			Model data = Rio.parse(stream, "http://a.example.shex/", RDFFormat.TURTLE);
-			graph = new RDF4JGraph(data);
+			graph = factory.asGraph(data);
 		} catch (Exception e) {
 			error = e.getMessage();
 		}
