@@ -36,7 +36,6 @@
 			<groupId>fr.inria.lille.shexjava</groupId>
   			<artifactId>shexjava-core</artifactId>
   			<version>1.1a</version>
-  			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rdf4j</groupId>

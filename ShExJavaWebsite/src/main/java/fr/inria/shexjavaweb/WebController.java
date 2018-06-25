@@ -21,7 +21,7 @@ public class WebController {
     }
 	
 	@Timed(value="shexweb.javadocs.timer")
-	@GetMapping("/javadocs/**")
+	@GetMapping("/javadocs/**/*.html")
     public String javadocRoot(Model model,HttpServletRequest request) {
 		String base = new String(request.getRequestURL());
 		base = base.split("/javadocs/")[1];
