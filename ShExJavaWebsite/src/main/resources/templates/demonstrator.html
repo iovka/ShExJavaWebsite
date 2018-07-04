@@ -6,7 +6,6 @@
     <link rel="stylesheet" type="text/css" href="/css/core.css" />
     <script src="/js/examples.js"></script>
     <link rel="icon" href="/ShEx-Icon.svg">
-    
 
     <script src="/codemirror/lib/codemirror.js"></script>
     <link rel="stylesheet" href="/codemirror/lib/codemirror.css">
@@ -31,6 +30,7 @@
                  <option value="Bug report (ShExC)">Bug report: EachOf, OneOf, Cardinality in ShExC</option>
                  <option value="Bug report (ShExJ)">Bug report: EachOf, OneOf, Cardinality in ShExJ</option>
                  <option value="Datatypes (ShExC)">Datatypes constraint in ShExC</option>
+                 <option value="Countries Graph">Countries Graph</option>
              </select> 
              <table>
                 <tr>
@@ -83,6 +83,14 @@
                      </td>
                 </tr>
                 <tr>
+                     <td colspan = "2">
+                        <div id ="boxes">
+                            <input type="checkbox" th:field="*{positivedis}"> Display only positive result<br><br/>
+                            <input type="checkbox" th:field="*{graphdis}"> Display the graph<br><br/>
+                        </div>
+                     </td>
+                </tr>
+                <tr>
                     <td>
                         <input type="submit" value="Validate"/>
                     </td>
@@ -92,6 +100,8 @@
         <div th:if="${(result.result != null) || (result.error != null)}">
             <h2> Result: </h2>
             <span th:text="${result.error != null} ? ${result.error}:''">Error display</span>
+            
+            <h3>Typing computed:</h3>
             <div th:if="${result.result != null}">
                 <div class="result">
                     <table >
@@ -104,6 +114,23 @@
                             <td th:text="${res.node}"></td>
                             <td th:text="${res.shapeLabel}" th:style="${res.result ? 'background-color:#ccffcc':'background-color: #ff9999'}"></td>
                             <td th:text="${res.message}"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <h3>Graph parsed:</h3>            
+            <div th:if="${result.graphli != null}">
+                <div class="result">
+                    <table >
+                        <tr>
+                            <td>Subject</td>
+                            <td>Predicate</td>
+                            <td>Object</td>
+                        </tr>
+                        <tr th:each="tri:${result.graphli}">
+                            <td th:text="${tri.subject}"></td>
+                            <td th:text="${tri.predicate}"></td>
+                            <td th:text="${tri.object}"></td>
                         </tr>
                     </table>
                 </div>

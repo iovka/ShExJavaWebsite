@@ -9,6 +9,8 @@ public class RequestValidation {
 	private String node="";
 	private String shape="";
 	private String predefined="";
+	private boolean positivedis=true;
+	private boolean graphdis=false;
 	
 	public String getSchema() {
 		return schema;
@@ -74,4 +76,24 @@ public class RequestValidation {
 		this.predefined = predefined;
 	}
 
+	public boolean getPositivedis() {
+		return positivedis;
+	}
+
+	public void setPositivedis(boolean positivedis) {
+		this.positivedis = positivedis;
+	}
+
+	public boolean getGraphdis() {
+		return graphdis;
+	}
+
+	public void setGraphdis(boolean graphdis) {
+		this.graphdis = graphdis;
+	}
+
+
+	
+	
+	
 }

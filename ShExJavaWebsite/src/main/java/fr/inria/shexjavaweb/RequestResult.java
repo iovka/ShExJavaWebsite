@@ -10,6 +10,7 @@ import java.util.List;
 import org.apache.commons.rdf.api.Graph;
 import org.apache.commons.rdf.api.IRI;
 import org.apache.commons.rdf.api.RDFTerm;
+import org.apache.commons.rdf.api.Triple;
 import org.apache.commons.rdf.rdf4j.RDF4J;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.rio.RDFFormat;
@@ -22,15 +23,18 @@ import fr.inria.lille.shexjava.schema.parsing.ShExCParser;
 import fr.inria.lille.shexjava.schema.parsing.ShExJParser;
 import fr.inria.lille.shexjava.schema.parsing.ShExRParser;
 import fr.inria.lille.shexjava.util.CommonGraph;
+import fr.inria.lille.shexjava.util.Pair;
 import fr.inria.lille.shexjava.validation.FailureAnalyzerSimple;
 import fr.inria.lille.shexjava.validation.RecursiveValidationWithMemorization;
 import fr.inria.lille.shexjava.validation.RefineValidation;
 import fr.inria.lille.shexjava.validation.ValidationAlgorithm;
 
 public class RequestResult {
-	private List<ResultEntry> result=null;
-	private String error = null;
 	private static RDF4J factory = (RDF4J) GlobalFactory.RDFFactory; 
+
+	private String error = null;
+	private List<ResultEntry> result=null;
+	private List<TripleString> graphli=null;
 
 	public RequestResult() {
 		super();
@@ -47,18 +51,23 @@ public class RequestResult {
 					ValidationAlgorithm valAlgo = new RecursiveValidationWithMemorization(schema, graph);
 					FailureAnalyzerSimple fas = new FailureAnalyzerSimple();
 					valAlgo.addFailureReportsCollector(fas);
-					ResultEntry res = new ResultEntry(validation.getNode(),validation.getShape());
 					try  {
 						IRI focusNode = factory.createIRI(validation.getNode()); 
 						Label shapeLabel = new Label(factory.createIRI(validation.getShape()));
-						boolean result = valAlgo.validate(focusNode, shapeLabel);
-						res.setResult(result && fas.hasReport(focusNode, shapeLabel));
-						if (!result && fas.hasReport(focusNode, shapeLabel))
-							res.setMessage(fas.getReport(focusNode, shapeLabel).getMessage());
+						valAlgo.validate(focusNode, shapeLabel);
+						for (Pair<RDFTerm, Label> pair : valAlgo.getTyping().getAllStatus().keySet()) {
+							ResultEntry tmp = new ResultEntry(pair.one.toString(),pair.two.toString());
+							tmp.setResult(valAlgo.getTyping().isConformant(pair.one, pair.two));
+							if (!tmp.isResult() && fas.hasReport(pair.one, pair.two))
+								tmp.setMessage(fas.getReport(pair.one, pair.two).getMessage());
+							if ((validation.getPositivedis() && tmp.isResult()) || !validation.getPositivedis())
+								result.add(tmp);
+						}						
 					}catch (Exception e) {
+						ResultEntry res = new ResultEntry(validation.getNode(),validation.getShape());
 						res.setMessage(e.toString());
+						result.add(res);
 					}
-					result.add(res);
 				}
 				if (validation.getAlgorithm().equals("refine")) {
 					ValidationAlgorithm valAlgo = new RefineValidation(schema, graph);
@@ -82,7 +91,8 @@ public class RequestResult {
 							} catch (Exception e) {
 								res.setMessage(e.toString());
 							}
-							result.add(res);
+							if ((validation.getPositivedis() && res.isResult()) || !validation.getPositivedis())
+								result.add(res);
 						}
 					}
 				}
@@ -108,10 +118,19 @@ public class RequestResult {
 		this.result = result;
 	}
 	
-	
+	public List<TripleString> getGraphli() {
+		return graphli;
+	}
+
+	public void setGraphli(List<TripleString> graphli) {
+		this.graphli = graphli;
+	}
+
 	//-------------------------------
 	// Utils
 	//------------------------------
+
+
 
 	private ShexSchema parseShexSchema(RequestValidation validation) {
 		ShexSchema schema = null;
@@ -141,9 +160,17 @@ public class RequestResult {
 		try {
 			Model data = Rio.parse(stream, "http://a.example.shex/", RDFFormat.TURTLE);
 			graph = factory.asGraph(data);
+			if (validation.getGraphdis()) {
+				this.graphli = new ArrayList<>();
+				Iterator<Triple> iter = graph.iterate().iterator();
+				while (iter.hasNext()) {
+					Triple next = iter.next();
+					graphli.add(new TripleString(next.getSubject().toString(),next.getPredicate().toString(), next.getObject().toString()));
+				}
+			}
 		} catch (Exception e) {
 			error = e.getMessage();
-		}
+		}		
 		return graph;
 	}
 
