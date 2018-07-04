@@ -64,6 +64,20 @@ function loadExample() {
        document.getElementById("shape").value = "http://a.example/S-integer";
        document.getElementById("schemaformat").value = "ShExC";
        document.getElementById("dataformat").value = "TURTLE";
+   } else if (example == "User data graph"){
+       document.getElementById("data").value = bugreport_data;
+       document.getElementById("schema").value = "";
+       document.getElementById("node").value = "http://example.shex∕bug1";
+       document.getElementById("shape").value = "http://a.example/BugReport";
+       document.getElementById("schemaformat").value = "ShExC";
+       document.getElementById("dataformat").value = "TURTLE";
+   } else if (example == "Bug report graph"){
+       document.getElementById("data").value = users_data;
+       document.getElementById("schema").value = "";
+       document.getElementById("node").value = "";
+       document.getElementById("shape").value = "";
+       document.getElementById("schemaformat").value = "ShExC";
+       document.getElementById("dataformat").value = "TURTLE";
    } else if (example == "Countries Graph"){
        document.getElementById("data").value = countries_data;
        document.getElementById("schema").value = countries_sch;
@@ -472,6 +486,33 @@ var names_data = `<http://example.shex∕user1> <http://a.example/name> "Mr. Smi
 <http://example.shex∕user4> <http://a.example/last-name> "Smith" ;
                             <http://a.example/first-name> "John" .`
                             
+
+//----------------------------
+// Countries graph
+//----------------------------
+
+
+var users_data = `PREFIX ex      <http://example.org/>
+PREFIX schema: <http://schema.org/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+PREFIX foaf:   <http://xmlns.com/foaf/0.1/>
+
+ex:bob  <http://schema.org/gender>   schema:Male ;  #this is a comment
+        ex:name                      "Robert"@fr; # A string Literal witha langtag     
+        schema:birthDate             "1980-03-10"^^xsd:date . # A date literal
+
+ex:alice ex:name                      "Alice" ; 
+          schema:gender                schema:Female ;
+          # Multiple neighbours with the same predicate.
+          # The last one is a blank node.
+          schema:knows                 :bob, :carol , _:others. 
+
+         # Create a subnode with the two neighbours "John" and "Doe".
+ex:john  ex:name [ schema:first-name "John"; 
+                   schema:first-name "Doe" ];
+         # Create a collection
+         schema:siblings       ( :carol :alice :bob ).
+`
 
 //----------------------------
 // Countries graph
