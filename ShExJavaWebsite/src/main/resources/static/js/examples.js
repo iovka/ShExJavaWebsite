@@ -64,14 +64,14 @@ function loadExample() {
        document.getElementById("shape").value = "http://a.example/S-integer";
        document.getElementById("schemaformat").value = "ShExC";
        document.getElementById("dataformat").value = "TURTLE";
-   } else if (example == "User data graph"){
+   } else if (example == "Bug report graph"){
        document.getElementById("data").value = bugreport_data;
        document.getElementById("schema").value = "";
        document.getElementById("node").value = "http://example.shex∕bug1";
        document.getElementById("shape").value = "http://a.example/BugReport";
        document.getElementById("schemaformat").value = "ShExC";
        document.getElementById("dataformat").value = "TURTLE";
-   } else if (example == "Bug report graph"){
+   } else if (example == "User data graph"){
        document.getElementById("data").value = users_data;
        document.getElementById("schema").value = "";
        document.getElementById("node").value = "";
@@ -5973,7 +5973,6 @@ _:node1chi8o4qax605 a geographis:Code ;
 <http://telegraphis.net/data/countries/KR#KR> gn:featureClass gn:A ;
 	gn:featureCode gn:A.PCL ;
 	gn:name "South Korea"@en ;
-	gn:population "48422644" ;
 	owl:sameAs <http://dbpedia.org/resource/South_Korea> , <http://sws.geonames.org/1835841/> , <http://www.geonames.org/countries/#KR> , <http://www4.wiwiss.fu-berlin.de/factbook/resource/Korea_South> .
 
 <http://telegraphis.net/data/countries/KW#KW> a gn:Country ;
@@ -9118,6 +9117,7 @@ _:node1chi8o4qax955 a geographis:Code ;
 <http://telegraphis.net/data/countries/RW#RW> gn:featureClass gn:A ;
 	gn:featureCode gn:A.PCL ;
 	gn:name "Rwanda"@en ;
+	gn:population "10186000" ;
 	owl:sameAs <http://dbpedia.org/resource/Rwanda> , <http://sws.geonames.org/49518/> , <http://www.geonames.org/countries/#RW> , <http://www4.wiwiss.fu-berlin.de/factbook/resource/Rwanda> .
 
 <http://telegraphis.net/data/countries/SA#SA> a gn:Country ;
