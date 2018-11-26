@@ -38,6 +38,16 @@
   			<version>1.1a</version>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-rdf-api</artifactId>
+			<version>0.5.0</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-rdf-rdf4j</artifactId>
+		    <version>0.5.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.eclipse.rdf4j</groupId>
 			<artifactId>rdf4j-runtime</artifactId>
 			<version>2.2.2</version>
