@@ -1,7 +1,5 @@
 package fr.inria.shexjavaweb;
 
-import java.util.List;
-
 public class ResultEntry {
 	private String node;
 	private String shapeLabel;

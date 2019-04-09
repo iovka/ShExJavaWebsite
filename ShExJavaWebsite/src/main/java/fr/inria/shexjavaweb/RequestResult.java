@@ -24,7 +24,8 @@ import fr.inria.lille.shexjava.schema.parsing.ShExJParser;
 import fr.inria.lille.shexjava.schema.parsing.ShExRParser;
 import fr.inria.lille.shexjava.util.CommonGraph;
 import fr.inria.lille.shexjava.util.Pair;
-import fr.inria.lille.shexjava.validation.FailureAnalyzerSimple;
+import fr.inria.lille.shexjava.validation.LocalMatching;
+import fr.inria.lille.shexjava.validation.MatchingCollector;
 import fr.inria.lille.shexjava.validation.RecursiveValidationWithMemorization;
 import fr.inria.lille.shexjava.validation.RefineValidation;
 import fr.inria.lille.shexjava.validation.ValidationAlgorithm;
@@ -49,17 +50,24 @@ public class RequestResult {
 				result = new ArrayList<>();
 				if (validation.getAlgorithm().equals("recursive")) {
 					ValidationAlgorithm valAlgo = new RecursiveValidationWithMemorization(schema, graph);
-					FailureAnalyzerSimple fas = new FailureAnalyzerSimple();
-					valAlgo.addFailureReportsCollector(fas);
+					MatchingCollector fas = new MatchingCollector();
+					valAlgo.addMatchingObserver(fas);
 					try  {
 						IRI focusNode = factory.createIRI(validation.getNode()); 
 						Label shapeLabel = new Label(factory.createIRI(validation.getShape()));
 						valAlgo.validate(focusNode, shapeLabel);
-						for (Pair<RDFTerm, Label> pair : valAlgo.getTyping().getAllStatus().keySet()) {
+						for (Pair<RDFTerm, Label> pair : valAlgo.getTyping().getStatusMap().keySet()) {
 							ResultEntry tmp = new ResultEntry(pair.one.toString(),pair.two.toString());
 							tmp.setResult(valAlgo.getTyping().isConformant(pair.one, pair.two));
-							if (!tmp.isResult() && fas.hasReport(pair.one, pair.two))
-								tmp.setMessage(fas.getReport(pair.one, pair.two).getMessage());
+							if (!tmp.isResult()) { 
+								LocalMatching matching = fas.getMatching(pair.one, pair.two);
+								if (matching != null) {
+									if (matching.getUnmatched().size()>0)
+										tmp.setMessage("Umatched triples: "+matching.getUnmatched());
+									else
+										tmp.setMessage("Matching not found.");
+								}
+							}
 							if ((validation.getPositivedis() && tmp.isResult()) || !validation.getPositivedis())
 								result.add(tmp);
 						}						
@@ -70,11 +78,11 @@ public class RequestResult {
 					}
 				}
 				if (validation.getAlgorithm().equals("refine")) {
-					ValidationAlgorithm valAlgo = new RefineValidation(schema, graph);
-					FailureAnalyzerSimple fas = new FailureAnalyzerSimple();
-					valAlgo.addFailureReportsCollector(fas);
+					RefineValidation valAlgo = new RefineValidation(schema, graph);
+					MatchingCollector fas = new MatchingCollector();
+					valAlgo.addMatchingObserver(fas);
 					try {
-						valAlgo.validate(null, null);
+						valAlgo.validate();
 					} catch (Exception e) {
 						error = e.toString();
 					}
@@ -86,8 +94,15 @@ public class RequestResult {
 							try {
 								boolean result = valAlgo.validate(node, l);
 								res.setResult(result);
-								if (!result && fas.hasReport(node, l))
-									res.setMessage(fas.getReport(node, l).getMessage());
+								if (!result) {
+									LocalMatching matching = fas.getMatching(node, l);
+									if (matching != null) {
+										if (matching.getUnmatched().size()>0)
+											res.setMessage("Umatched triples: "+matching.getUnmatched());
+										else
+											res.setMessage("Matching not found.");
+									}
+								}
 							} catch (Exception e) {
 								res.setMessage(e.toString());
 							}
