@@ -94,8 +94,9 @@ public class RequestResult {
 							try {
 								boolean result = valAlgo.validate(node, l);
 								res.setResult(result);
+								LocalMatching matching = fas.getMatching(node, l);
 								if (!result) {
-									LocalMatching matching = fas.getMatching(node, l);
+									
 									if (matching != null) {
 										if (matching.getUnmatched().size()>0)
 											res.setMessage("Umatched triples: "+matching.getUnmatched());
