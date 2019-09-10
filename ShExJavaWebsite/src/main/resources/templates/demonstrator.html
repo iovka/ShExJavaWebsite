@@ -68,21 +68,10 @@
                     </td>
                 </tr>
                 <tr>
-                    <td  colspan = "2">
-                        Validation Algorithm:
-                        <select th:field="*{algorithm}"  onchange="changeRecursive()">
-                             <option value="refine">Refine validation (compute a typing for the objects of the graph againt the shape expression of the rules map)</option>
-                             <option value="recursive">Recursive validation (test if a node has a ShapeExpr)</option>
-                        </select>
-                     </td>
+                    <td>ShapeMap</td>
                 </tr>
                 <tr>
-                     <td colspan = "2">
-                        <div id ="recursive" th:style="${request.algorithm == 'recursive' ?  'display: block' : ' display: none'}">
-                            Focus node: <input type="text" th:field="*{node}"/><br/>
-                            Shape: <input type="text" th:field="*{shape}"/>
-                        </div>
-                     </td>
+                     <td><textarea rows="4" cols="80" th:field="*{shapemap}"/></td>
                 </tr>
                 <tr>
                      <td colspan = "2">

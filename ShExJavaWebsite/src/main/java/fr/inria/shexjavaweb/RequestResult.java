@@ -1,6 +1,7 @@
 package fr.inria.shexjavaweb;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -22,6 +23,10 @@ import fr.inria.lille.shexjava.schema.ShexSchema;
 import fr.inria.lille.shexjava.schema.parsing.ShExCParser;
 import fr.inria.lille.shexjava.schema.parsing.ShExJParser;
 import fr.inria.lille.shexjava.schema.parsing.ShExRParser;
+import fr.inria.lille.shexjava.shapeMap.BaseShapeMap;
+import fr.inria.lille.shexjava.shapeMap.ResultShapeMap;
+import fr.inria.lille.shexjava.shapeMap.abstrsynt.ShapeAssociation;
+import fr.inria.lille.shexjava.shapeMap.parsing.ShapeMapParsing;
 import fr.inria.lille.shexjava.util.CommonGraph;
 import fr.inria.lille.shexjava.util.Pair;
 import fr.inria.lille.shexjava.validation.LocalMatching;
@@ -32,7 +37,7 @@ import fr.inria.lille.shexjava.validation.ValidationAlgorithm;
 
 public class RequestResult {
 	private static RDF4J factory = (RDF4J) GlobalFactory.RDFFactory; 
-
+	private static ShapeMapParsing shapeMapParser = new ShapeMapParsing();
 	private String error = null;
 	private List<ResultEntry> result=null;
 	private List<TripleString> graphli=null;
@@ -47,71 +52,40 @@ public class RequestResult {
 		if (schema!=null) {
 			Graph graph = parseRDFGraph(validation);
 			if (graph != null) {
-				result = new ArrayList<>();
-				if (validation.getAlgorithm().equals("recursive")) {
+				try {
+					result = new ArrayList<>();
+					
+					BaseShapeMap shapeMap = shapeMapParser.parse(new ByteArrayInputStream(validation.getShapemap().getBytes()));
 					ValidationAlgorithm valAlgo = new RecursiveValidationWithMemorization(schema, graph);
 					MatchingCollector fas = new MatchingCollector();
 					valAlgo.addMatchingObserver(fas);
-					try  {
-						IRI focusNode = factory.createIRI(validation.getNode()); 
-						Label shapeLabel = new Label(factory.createIRI(validation.getShape()));
-						valAlgo.validate(focusNode, shapeLabel);
-						for (Pair<RDFTerm, Label> pair : valAlgo.getTyping().getStatusMap().keySet()) {
-							ResultEntry tmp = new ResultEntry(pair.one.toString(),pair.two.toString());
-							tmp.setResult(valAlgo.getTyping().isConformant(pair.one, pair.two));
-							if (!tmp.isResult()) { 
-								LocalMatching matching = fas.getMatching(pair.one, pair.two);
-								if (matching != null) {
-									if (matching.getUnmatched().size()>0)
-										tmp.setMessage("Umatched triples: "+matching.getUnmatched());
-									else
-										tmp.setMessage("Matching not found.");
-								}
+					
+					ResultShapeMap results = valAlgo.validate(shapeMap);
+//					for (ShapeAssociation association:results.getAssociations()) {
+//						RDFTerm node = association.getNodeSelector().apply(graph).iterator().next();
+//						Label label = association.getShapeSelector().apply(schema);
+					for (Pair<RDFTerm,Label> association:valAlgo.getTyping().getStatusMap().keySet()) {
+						RDFTerm node = association.one;
+						Label label = association.two;
+						
+						ResultEntry tmp = new ResultEntry(node.toString(),label.toString());
+						tmp.setResult(valAlgo.getTyping().isConformant(node,label));
+
+						if (!tmp.isResult()) { 
+							LocalMatching matching = fas.getMatching(node,label);
+							if (matching != null) {
+								if (matching.getUnmatched().size()>0)
+									tmp.setMessage("Umatched triples: "+matching.getUnmatched());
+								else
+									tmp.setMessage("Matching not found.");
 							}
-							if ((validation.getPositivedis() && tmp.isResult()) || !validation.getPositivedis())
-								result.add(tmp);
-						}						
-					}catch (Exception e) {
-						ResultEntry res = new ResultEntry(validation.getNode(),validation.getShape());
-						res.setMessage(e.toString());
-						result.add(res);
-					}
-				}
-				if (validation.getAlgorithm().equals("refine")) {
-					RefineValidation valAlgo = new RefineValidation(schema, graph);
-					MatchingCollector fas = new MatchingCollector();
-					valAlgo.addMatchingObserver(fas);
-					try {
-						valAlgo.validate();
-					} catch (Exception e) {
-						error = e.toString();
-					}
-					Iterator<RDFTerm> ite = CommonGraph.getAllNodes(graph).iterator();
-					while (ite.hasNext()) {
-						RDFTerm node = ite.next();
-						for (Label l:schema.getRules().keySet()) {
-							ResultEntry res = new ResultEntry(node.toString(),l.stringValue());
-							try {
-								boolean result = valAlgo.validate(node, l);
-								res.setResult(result);
-								LocalMatching matching = fas.getMatching(node, l);
-								if (!result) {
-									
-									if (matching != null) {
-										if (matching.getUnmatched().size()>0)
-											res.setMessage("Umatched triples: "+matching.getUnmatched());
-										else
-											res.setMessage("Matching not found.");
-									}
-								}
-							} catch (Exception e) {
-								res.setMessage(e.toString());
-							}
-							if ((validation.getPositivedis() && res.isResult()) || !validation.getPositivedis())
-								result.add(res);
 						}
+						if ((validation.getPositivedis() && tmp.isResult()) || !validation.getPositivedis())
+							result.add(tmp);
 					}
-				}
+				} catch (IOException e) {
+					error = e.toString();
+				}					
 			}
 		}
 	}

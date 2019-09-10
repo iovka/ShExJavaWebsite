@@ -5,9 +5,7 @@ public class RequestValidation {
 	private String schemaformat="";
 	private String data="";
 	private String dataformat="";
-	private String algorithm="";
-	private String node="";
-	private String shape="";
+	private String shapemap="";
 	private String predefined="";
 	private boolean positivedis=true;
 	private boolean graphdis=false;
@@ -36,12 +34,12 @@ public class RequestValidation {
 		this.data = data;
 	}
 	
-	public String getAlgorithm() {
-		return algorithm;
+	public String getShapemap() {
+		return shapemap;
 	}
 
-	public void setAlgorithm(String algorithm) {
-		this.algorithm = algorithm;
+	public void setShapemap(String shapemap) {
+		this.shapemap = shapemap;
 	}
 
 	public String getDataformat() {
@@ -50,22 +48,6 @@ public class RequestValidation {
 
 	public void setDataformat(String dataformat) {
 		this.dataformat = dataformat;
-	}
-
-	public String getNode() {
-		return node;
-	}
-	
-	public void setNode(String node) {
-		this.node = node;
-	}
-	
-	public String getShape() {
-		return shape;
-	}
-	
-	public void setShape(String shape) {
-		this.shape = shape;
 	}
 
 	public String getPredefined() {

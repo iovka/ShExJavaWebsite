@@ -11,78 +11,67 @@ function loadExample() {
    if (example == "empty"){
        document.getElementById("data").value = "";
        document.getElementById("schema").value = "";
-       document.getElementById("node").value = "";
-       document.getElementById("shape").value = "";
+       document.getElementById("shapemap").value = "";
        document.getElementById("schemaformat").value = "ShExC";
        document.getElementById("dataformat").value = "TURTLE";
    } else if (example == "Simple ShExC example"){
        document.getElementById("data").value = simple_data;
        document.getElementById("schema").value = simple_schec;
-       document.getElementById("node").value = "http://example.org/alice";
-       document.getElementById("shape").value = "http://example.org/User";
+       document.getElementById("shapemap").value = "<http://example.org/alice> @<http://example.org/User>";
        document.getElementById("schemaformat").value = "ShExC";
        document.getElementById("dataformat").value = "TURTLE";
    } else if (example == "Simple ShExR example"){
        document.getElementById("data").value = simple_data;
        document.getElementById("schema").value = simple_scher_ttl;
-       document.getElementById("node").value = "http://example.org/alice";
-       document.getElementById("shape").value = "http://example.org/User";
+       document.getElementById("shapemap").value = "<http://example.org/alice> @<http://example.org/User>";
        document.getElementById("schemaformat").value = "ShExR(TURTLE)";
        document.getElementById("dataformat").value = "TURTLE";
    } else if (example == "Names (ShExC)"){
        document.getElementById("data").value = names_data;
        document.getElementById("schema").value = names_schec;
-       document.getElementById("node").value = "http://example.shex∕user4";
-       document.getElementById("shape").value = "http://a.example/User";
+       document.getElementById("shapemap").value = "<http://example.shex∕user4>@<http://a.example/User>";
        document.getElementById("schemaformat").value = "ShExC";
        document.getElementById("dataformat").value = "TURTLE";
    } else if (example == "Names (ShExJ)"){
        document.getElementById("data").value = names_data;
        document.getElementById("schema").value = names_schej;
-       document.getElementById("node").value = "http://example.shex∕user4";
-       document.getElementById("shape").value = "http://a.example/User";
+       document.getElementById("shapemap").value = "<http://example.shex∕user4>@<http://a.example/User>";
        document.getElementById("schemaformat").value = "ShExJ";
        document.getElementById("dataformat").value = "TURTLE";
    } else if (example == "Bug report (ShExC)"){
        document.getElementById("data").value = bugreport_data;
        document.getElementById("schema").value = bugreport_schec;
-       document.getElementById("node").value = "http://example.shex∕bug1";
-       document.getElementById("shape").value = "http://a.example/BugReport";
+       document.getElementById("shapemap").value = "<http://example.shex∕bug1>@<http://a.example/BugReport>";
        document.getElementById("schemaformat").value = "ShExC";
        document.getElementById("dataformat").value = "TURTLE";
    } else if (example == "Bug report (ShExJ)"){
        document.getElementById("data").value = bugreport_data;
        document.getElementById("schema").value = bugreport_schej;
-       document.getElementById("node").value = "http://example.shex∕bug1";
-       document.getElementById("shape").value = "http://a.example/BugReport";
+       document.getElementById("shapemap").value = "<http://example.shex∕bug1>@<http://a.example/BugReport>";
        document.getElementById("schemaformat").value = "ShExJ";
        document.getElementById("dataformat").value = "TURTLE";
    } else if (example == "Datatypes (ShExC)"){
        document.getElementById("data").value = datatypes_data;
        document.getElementById("schema").value = datatypes_shexC;
-       document.getElementById("node").value = "http://a.example/decimal-n1";
-       document.getElementById("shape").value = "http://a.example/S-integer";
+       document.getElementById("shapemap").value = "<http://a.example/decimal-n1>@<http://a.example/S-integer>";
        document.getElementById("schemaformat").value = "ShExC";
        document.getElementById("dataformat").value = "TURTLE";
    } else if (example == "Bug report graph"){
        document.getElementById("data").value = bugreport_data;
        document.getElementById("schema").value = "";
-       document.getElementById("node").value = "http://example.shex∕bug1";
-       document.getElementById("shape").value = "http://a.example/BugReport";
+       document.getElementById("shapemap").value = "<http://a.example/decimal-n1>@<http://a.example/S-integer>";
        document.getElementById("schemaformat").value = "ShExC";
        document.getElementById("dataformat").value = "TURTLE";
    } else if (example == "User data graph"){
        document.getElementById("data").value = users_data;
        document.getElementById("schema").value = "";
-       document.getElementById("node").value = "";
-       document.getElementById("shape").value = "";
+       document.getElementById("shapemap").value = "";
        document.getElementById("schemaformat").value = "ShExC";
        document.getElementById("dataformat").value = "TURTLE";
    } else if (example == "Countries Graph"){
        document.getElementById("data").value = countries_data;
        document.getElementById("schema").value = countries_sch;
-       document.getElementById("node").value = "";
-       document.getElementById("shape").value = "";
+       document.getElementById("shapemap").value = "";
        document.getElementById("schemaformat").value = "ShExC";
        document.getElementById("dataformat").value = "TURTLE";
    }
